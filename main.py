@@ -32,8 +32,8 @@ _URL = (
 
 _BASE_DATA_DIR = "data"
 _SEEN_PATH = os.path.join(_BASE_DATA_DIR, "seen.csv")
-_ADD_PATH = os.path.join(_BASE_DATA_DIR, "delete.csv")
-_DELETE_PATH = os.path.join(_BASE_DATA_DIR, "add.csv")
+_ADD_PATH = os.path.join(_BASE_DATA_DIR, "add.csv")
+_DELETE_PATH = os.path.join(_BASE_DATA_DIR, "delete.csv")
 
 
 def get_random_timeout(min_: float = 1.5, mean: float = 4) -> float:
@@ -71,9 +71,8 @@ def scrape_vacancy(url: str, sess: requests.Session) -> Tuple[str, str]:
 
 def scrape_vacancies(
     vacancies: ResultSet, urls_ro_delete: Set[str]
-) -> Tuple[List[Optional[str]], List[Optional[str]]]:
-    position_names = []
-    service_names = []
+) -> List[Tuple[str, Optional[str], Optional[str]]]:
+    outputs = []
     with requests.Session() as sess:
         for vacancy in tqdm(vacancies, desc="Scraping..."):
             url = "https://yandex.ru" + vacancy.attrs["href"]
@@ -81,10 +80,9 @@ def scrape_vacancies(
                 urls_ro_delete.remove(url)
                 continue
             position_name, service_name = scrape_vacancy(url, sess)
-            position_names.append(position_name)
-            service_names.append(service_name)
+            outputs.append((url, position_name, service_name))
             time.sleep(get_random_timeout())
-    return position_names, service_names
+    return outputs
 
 
 if __name__ == "__main__":
@@ -103,8 +101,8 @@ if __name__ == "__main__":
         with open(_SEEN_PATH) as f:
             seen_rows = list(csv.reader(f))[1:]  # skipping header
     urls_to_delete = {i[1] for i in seen_rows}
-    position_names, service_names = scrape_vacancies(vacancies, urls_to_delete)
-    csv_header = ["stage", "link", "position", "service", "rating", "comments"]
+    rows_to_add = scrape_vacancies(vacancies, urls_to_delete)
+    csv_header = ["link", "position", "service"]
     rows_to_keep = [csv_header]
     rows_to_delete = [csv_header]
     for row in seen_rows:
@@ -113,19 +111,17 @@ if __name__ == "__main__":
         else:
             rows_to_keep.append(row)
 
-    rows_to_add = [csv_header]
-    for position_name, service_name in zip(position_names, service_names):
-        rows_to_keep.append([position_name, service_name])
-        rows_to_add.append([position_name, service_name])
+    rows_to_keep.extend(rows_to_add)
+    rows_to_add = [csv_header, *rows_to_add]
 
-    logging.info(f"Saving {len(rows_to_keep)-1} active vacancies...")
+    logging.info(f"Saving {len(rows_to_keep) - 1} active vacancies...")
     with open(_SEEN_PATH, mode="w", newline="") as f:
         csv.writer(f).writerows(rows_to_keep)
 
-    logging.info(f"Saving {len(rows_to_delete)-1} vacancies to be deleted...")
-    with open(_DELETE_PATH, mode="w", newline="") as f:
-        csv.writer(f).writerows(rows_to_delete)
-
-    logging.info(f"Saving {len(rows_to_add)-1} vacancies to be added...")
+    logging.info(f"Saving {len(rows_to_add) - 1} vacancies to be added...")
     with open(_ADD_PATH, mode="w", newline="") as f:
         csv.writer(f).writerows(rows_to_add)
+
+    logging.info(f"Saving {len(rows_to_delete) - 1} vacancies to be deleted...")
+    with open(_DELETE_PATH, mode="w", newline="") as f:
+        csv.writer(f).writerows(rows_to_delete)
