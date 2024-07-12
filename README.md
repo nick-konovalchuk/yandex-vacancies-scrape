@@ -8,9 +8,9 @@ The first run creates:
 Subsequent runs rewrite all 3 files:
 - `seen.csv` with, again, all* currently active Yandex vacancies 
 - `add.csv` with vacancies that weren't in previous `seen.csv`
-- `delete.csv` with vacancies that were in previous `seen.csv`, but not in new one
+- `delete.csv` with vacancies that were in previous `seen.csv`, but not in the new one
 
-\* The URL with search filters is hard-coded. You can change in by changing the `_URL` variable
+\* The URL with search filters is hard-coded. You can change it by changing the `_URL` variable
 
 ## Usage
 If you don't use Python regularly, here are the steps for you:
