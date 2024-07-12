@@ -10,7 +10,7 @@ Subsequent runs rewrite all 3 files:
 - `add.csv` with vacancies that weren't in previous `seen.csv`
 - `delete.csv` with vacancies that were in previous `seen.csv`, but not in new one
 
-\* The url with search filters is hard-coded. You can change in by changing the `_URL` variable
+\* The URL with search filters is hard-coded. You can change in by changing the `_URL` variable
 
 ## Usage
 If you don't use Python regularly, here are the steps for you:
@@ -30,7 +30,7 @@ If you don't use Python regularly, here are the steps for you:
    python main.py
    ```
 ## Contribution
-If you want some features/changes (like config files instead of manually changing the source code), 
+If you want some features/changes (like CLI, config files instead of manually changing the source code), 
 please open an issue
 ## Q&A
 - Why did you decide to use CSV files?  
