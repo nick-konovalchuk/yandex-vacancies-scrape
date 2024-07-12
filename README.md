@@ -10,7 +10,7 @@ Subsequent runs rewrite all 3 files:
 - `add.csv` with vacancies that weren't in previous `seen.csv`
 - `delete.csv` with vacancies that were in previous `seen.csv`, but not in the new one
 
-\* The URL with search filters is hard-coded. You can change it by changing the `_URL` variable
+\* The URL with search filters is hard-coded. You can change it by changing the `_URL` variable. You probably only need to change the search filters
 
 ## Usage
 If you don't use Python regularly, here are the steps for you:
