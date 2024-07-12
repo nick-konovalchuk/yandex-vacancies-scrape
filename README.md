@@ -30,7 +30,7 @@ If you don't use Python regularly, here are the steps for you:
    python main.py
    ```
 ## Contribution
-If you want some features/changes like config files instead of manually changing the source code 
+If you want some features/changes (like config files instead of manually changing the source code), 
 please open an issue
 ## Q&A
 - Why did you decide to use CSV files?  
