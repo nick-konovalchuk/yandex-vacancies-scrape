@@ -100,13 +100,13 @@ if __name__ == "__main__":
     else:
         with open(_SEEN_PATH) as f:
             seen_rows = list(csv.reader(f))[1:]  # skipping header
-    urls_to_delete = {i[1] for i in seen_rows}
+    urls_to_delete = {i[0] for i in seen_rows}
     rows_to_add = scrape_vacancies(vacancies, urls_to_delete)
     csv_header = ["link", "position", "service"]
     rows_to_keep = [csv_header]
     rows_to_delete = [csv_header]
     for row in seen_rows:
-        if row[1] in urls_to_delete:
+        if row[0] in urls_to_delete:
             rows_to_delete.append(row)
         else:
             rows_to_keep.append(row)
